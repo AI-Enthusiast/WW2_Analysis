@@ -1,0 +1,45 @@
+```{r}
+library(tidyverse)
+library(skimr)
+library(survival)
+library(survminer)
+library(fitdistrplus)
+
+root = 'C://Users//corma//Documents//GitHub//WW2_Analysis//u-boat_analysis.rmd'
+
+```
+```{r}
+# read uboats.csv
+uboats = read_csv("uboats.csv")
+
+```
+```{r}
+colnames(uboats)
+```
+[1] "Name"
+[2] "Year"
+[3] "Type"
+[4] "Notable Commanders"
+[5] "Warships_sunk_n_total_loss_No"
+[6] "Warships_sunk_n_total_loss_Tons-n-GRT"
+[7] "Warships_Damaged_No"
+[8] "Warships_Damaged_Tons-n-GRT"
+[9] "Merchant_Ships_sunk_No"
+[10] "Merchant_Ships_sunk_GRT"
+[11] "Merchant_Ships_damaged_No"
+[12] "Merchant_Ships_damaged_GRT"
+[13] "Merchant_Ships_total_loss_No"
+[14] "Merchant_Ships_total_loss_GRT"
+[15] "Fate_Event"
+[16] "Fate_Date"
+[17] "Notes"
+[18] "URL"
+```{r}
+skim(uboats)
+```
+```{r}
+head(uboats$`Notable Commanders`)
+```
+```{r}
+
+```
