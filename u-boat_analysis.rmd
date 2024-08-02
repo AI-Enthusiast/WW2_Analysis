@@ -149,6 +149,12 @@ cleaned_uboats = cleaned_uboats %>%
                   )
            )
   )
+```
 
-
+```{r}
+# find all rows were lifespan < active_service (there should be 0), only show those cols
+bad = cleaned_uboats %>% dplyr::select(Lifespan, Active_Service) %>% filter(Lifespan < Active_Service)
+if (nrow(bad) == 0) {
+  print("No uboats with Lifespan < Active_Service")
+}
 ```
