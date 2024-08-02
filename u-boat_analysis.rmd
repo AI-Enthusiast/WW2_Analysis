@@ -6,8 +6,8 @@ library(survminer)
 library(fitdistrplus)
 
 root = 'C://Users//corma//Documents//GitHub//WW2_Analysis//u-boat_analysis.rmd'
-
 ```
+
 ```{r}
 # read uboats.csv
 uboats = read_csv("uboats.csv")
@@ -41,5 +41,81 @@ skim(uboats)
 head(uboats$`Notable Commanders`)
 ```
 ```{r}
+head(uboats$Fate_Date)
+```
+[1] "6 April 1940\n"  "8 April 1944\n"  "1 August 1944\n" "1 August 1944\n"
+[5] "19 March 1943\n" "7 August 1944\n"
+```{r}
+head(uboats$Commissioned)
+```
+[1] "29 June 1935"     "25 July 1935"     "6 September 1935" "17 August 1935"
+[5] "31 August 1935"   "7 September 1935"
+```{r}
+# remove \n from Fate_Date
+uboats$Fate_Date = gsub("\n", "", uboats$Fate_Date)
+head(uboats$Fate_Date)
+```
+```{r}
+# create a new col for lifespan, measured in days
+uboats = uboats %>%
+  mutate(Commissioned = as.Date(Commissioned, format = "%d %B %Y"),
+         Fate_Date = as.Date(Fate_Date, format = "%d %B %Y"),
+         Lifespan = as.numeric(difftime(Fate_Date, Commissioned, units = "days")))
+head(uboats$Lifespan)
+```
+```{r}
+# create another col for active_service, measured in days from either the start of the Great War (July 28, 1914) or the start of WWII (September 1, 1939)
+uboats = uboats %>%
+  mutate(Active_Service = ifelse(Commissioned < as.Date("1939-09-01"),
+                                 as.numeric(difftime(Fate_Date, as.Date("1914-07-28"), units = "days")),
+                                 as.numeric(difftime(Fate_Date, as.Date("1939-09-01"), units = "days"))))
+head(uboats$Active_Service)
+#todo find if it was commisioned during a war (great or 2), if it was
+# do the diffenece between commisioned date and the fate date rather than start of war to fate dater
+```
+```{r}
+# save the data
+write_csv(uboats, "uboats_cleaned.csv")
+```
+```{r}
+cleaned_uboats = read_csv("uboats_cleaned.csv")
+```
+```{r}
+colnames(cleaned_uboats)
+```
+```{r}
+#filter for uboats with string "NA" fate
+NA_fate_uboats = cleaned_uboats %>% filter(Fate_Event == "NA")
+NA_fate_uboats
+# todo fix bug
+```
+```{r}
+# filter for uboats where Active_Service > lifespan
+bad_span_uboats = cleaned_uboats %>% filter(Active_Service > Lifespan)
+bad_span_uboats
+# todo fix bug
+```
+```{r}
+# create a complete list of notable commanders
+notable_commanders = cleaned_uboats$`Notable Commanders` %>%
+  strsplit(",") %>%
+  unlist() %>%
+  unique()
+notable_commanders
+```
+
+                                            sunk ww1   	|   sunk ww2 	|   Sunk btw
+Commissioned pre-ww1:   sunk - ww1_st | sunk - ww2_st |       ww1_end - comiss
+Commissioned ww1:    sunk - comiss       | sunk - ww2_st |         ww1_end - comiss
+commissioned btw:               --              |        sunk - ww2_st    |     --
+commissioned ww2:            --                    |    sunk - comiss    |        --
+
+```{r}
+# create a new col for the war the uboat was commissioned in
+cleaned_uboats = cleaned_uboats %>%
+  mutate(Active_Service = ifelse(Commissioned < as.Date("1914-07-28"), # if commissioned before the start of WW1
+                                 ifelse(Fate_Date < as.Date("1918-11-11"), # if sunk before the end of WW1
+                                        difftime(Fate_Date, as.Date("1914-07-28"), units = "days"), # calculate lifespan from start of WW1
+                                        ifelse(
 
 ```
