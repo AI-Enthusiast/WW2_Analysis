@@ -21,6 +21,18 @@ the most useful in terms of survival analysis. With the fate date and commission
 number of days each U-Boat saw service, called active service. This was the primary metric I used to analyze the
 longevity of the U-Boats.
 
+### Process
+
+1. **Data Collection**: Scraped data from Wikipedia using Python and BeautifulSoup.
+2. **Data Cleaning**: Cleaned the data in R, removing unnecessary columns and calculating active service days.
+3. **Data Analysis**: Analyzed the data in R using survival analysis techniques.
+4. **Data Visualization**: Visualized the data using ggplot2 and survminer.
+5. **Hypothesis Testing**: Tested the impact of U-Boat type and notable commanders on active service days.
+6. **Modeling**: Used a Cox Proportional Hazards model to analyze the impact of U-Boat type and notable commanders on
+   active service days.
+7. **Visualization**: Used a Kaplan-Meier curve to visualize the survival of the U-Boats over time.
+8. **Results**: Analyzed the results and drew conclusions based on the data.
+
 ### Technologies
 
 The initial data was compiled in a Python notebook (wiki_scraper_proto.ipynb) using the pandas, requests, and
