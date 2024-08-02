@@ -112,10 +112,43 @@ commissioned ww2:            --                    |    sunk - comiss    |      
 
 ```{r}
 # create a new col for the war the uboat was commissioned in
+ww1_start = as.Date("1914-07-28")
+ww1_end = as.Date("1918-11-11")
+ww2_start = as.Date("1939-09-01")
+ww2_end = as.Date("1945-09-02")
 cleaned_uboats = cleaned_uboats %>%
-  mutate(Active_Service = ifelse(Commissioned < as.Date("1914-07-28"), # if commissioned before the start of WW1
-                                 ifelse(Fate_Date < as.Date("1918-11-11"), # if sunk before the end of WW1
-                                        difftime(Fate_Date, as.Date("1914-07-28"), units = "days"), # calculate lifespan from start of WW1
-                                        ifelse(
+  mutate(Active_Service =
+           ifelse(Commissioned < ww1_start, # if commissioned before the start of WW1
+                  ifelse(Fate_Date < ww1_end, # if sunk before the end of WW1
+                         difftime(Fate_Date, ww1_start, units = "days"), # calculate lifespan from start of WW1
+
+                         ifelse(ww1_end < Fate_Date & Fate_Date < ww2_start, # if sunk between WW1 and WW2,
+                                difftime(ww1_end, ww1_start, units = "days"), # calculate AC as start WW1 to end WW1
+                                difftime(Fate_Date, Commissioned, units = "days") + difftime(ww1_end, ww1_start, units = "days"))), # calculate AC as start WW1 to end WW1 + start WW2 to fate
+
+                  # if not commissioned before WW1 check if commissiond during WW1
+                  ifelse(ww1_start < Commissioned & Commissioned < ww1_end, # if commissioned during WW1
+                         ifelse(Fate_Date < ww1_end, # if sunk before the end of WW1
+                                difftime(Fate_Date, Commissioned, units = "days"), # calculate lifespan from commission to fate
+                                ifelse(ww1_end < Fate_Date & Fate_Date < ww2_start, # if sunk between WW1 and WW2,
+                                       difftime(ww1_end, Commissioned, units = "days"), # calculate AC as comiss date to end WW1
+                                       difftime(Fate_Date, "1939-09-01", units = "days") + difftime(ww1_end, Commissioned, units = "days"))), # calculate AC as comiss date to end WW1 + start WW2 to fate
+
+                         # if not commissioned before or during WW1 check if commissioned between WW1 and WW2
+                         ifelse(ww1_end < Commissioned & Commissioned < ww2_start, # if commissioned between WW1 and WW2
+                                ifelse(Fate_Date > ww2_start,
+                                       difftime(Fate_Date, ww2_start, units = "days"), # calculate lifespan from commission to fate
+                                       NA), # if it sunk between wars
+                                # if not commissioned between WW1 and WW2 check if commissioned during WW2
+                                ifelse(ww2_start < Commissioned & Commissioned < ww2_end, # if commissioned during WW2
+                                       ifelse(Fate_Date < ww2_end, # if sunk before the end of WW2
+                                              difftime(Fate_Date, Commissioned, units = "days"), # calculate lifespan from commission to fate
+                                              difftime(ww2_end, Commissioned, units = "days")), # calculate AC as comiss date to end WW2
+                                       NA) # if not commissioned during WW2
+                         )
+                  )
+           )
+  )
+
 
 ```
