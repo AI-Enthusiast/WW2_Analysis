@@ -56,7 +56,8 @@ fate_counts = uboats_SA %>%
 fate_counts %>% ggplot() +
   geom_col(aes(x = reorder(Fate_Event, n), y = n)) +
   coord_flip() +
-  labs(title = "Unique Fates of U-Boats", x = "Count", y = "Fate")
+  labs(title = "Unique Fates of U-Boats", x = "Count", y = "Fate") +
+  theme_minimal()
 ```
 ```{r}
 # if Sunk, Scuttled, or Surrendered, then 1, else 0
@@ -69,8 +70,12 @@ km_fit = survfit(Surv(Active_Service, Status) ~ 1, data = uboats_SA)
 summary(km_fit)
 ```
 ```{r}
+# drop /n from Type
+uboats_SA$Type = gsub("\n", "", uboats_SA$Type)
 unique_types = unique(uboats_SA["Type"])
-
+unique_types
+```
+```{r}
 # graph unique types by count
 type_counts = uboats_SA %>%
   count(Type) %>%
@@ -82,26 +87,15 @@ type_counts %>% ggplot() +
   labs(title = "Unique Types of U-Boats", x = "Count", y = "Type")
 ```
 ```{r}
-# create a km curve for each type
-km_plots = list()
-for (ttype in unique_types) {
-  print('Survival Curve for', )
-  uboats_type = uboats_SA %>% filter(Type == ttype)
-  km_fit = survfit(Surv(Active_Service, Status) ~ 1, data = uboats_type)
-  km_plot = ggsurvplot(km_fit, data = uboats_type, palette = "YlOrRd", risk.table = F, conf.int = T) +
-    labs(title = paste("Survival Curve for", ttype), x = "Active Service (Days)")
-    print(km_plot)
-  km_plots = c(km_plots, km_plot)
-}
+type_viic = uboats_SA %>%
+  filter(Type == "VIIC")
+viic_fit = survfit(Surv(Active_Service, Status) ~ 1, data = type_viic)
+ggsurvplot(viic_fit, data = type_viic, palette = "YlOrRd", risk.table = F, conf.int = T) +
+  labs(title = "Survival of VIIC U-Boats", x = "Active Service (Years)")
 ```
 ```{r}
-# for plot in km_plots display
-for (plot in km_plots) {
-    print(plot)
-}
-```
-```{r}
-library(gridExtra)
+# create a unique list of commanders, splittind the commander col by comma
 
-
+unique_commanders = uboats %>% dplyr::select("Notable Commanders") %>% distinct() %>% separate_rows("Notable Commanders", sep = ",")
+unique_commanders
 ```

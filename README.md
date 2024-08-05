@@ -55,6 +55,9 @@ survival of the U-Boats over time.
 
 ### Results
 
+[//]: # (<img src="slides/2.jpg?raw=true"/>)
+
+
 ## Conclusion
 
 ## References
