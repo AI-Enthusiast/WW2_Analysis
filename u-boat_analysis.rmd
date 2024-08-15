@@ -103,6 +103,7 @@ type_km = function(utype, table) {
 ```
 ## notable commanders analysis
 ```{r}
-#uniq comanders, split by ,
+# read in the notable commanders data
+notable_commanders = read_csv("uboat_commanders.csv")
 
 ```
