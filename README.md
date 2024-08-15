@@ -21,6 +21,11 @@ the most useful in terms of survival analysis. With the fate date and commission
 number of days each U-Boat saw service, called active service. This was the primary metric I used to analyze the
 longevity of the U-Boats.
 
+### Data Summary
+<img src="slides/unq_types.png?raw=true"/>
+<img src="slides/unq_fates.png?raw=true"/>
+
+
 ### Process
 
 1. **Data Collection**: Scraped data from Wikipedia using Python and BeautifulSoup.
@@ -55,7 +60,6 @@ survival of the U-Boats over time.
 
 ### Results
 
-[//]: # (<img src="slides/2.jpg?raw=true"/>)
 
 
 ## Conclusion

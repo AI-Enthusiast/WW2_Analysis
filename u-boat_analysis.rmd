@@ -45,7 +45,7 @@ colnames(uboats)
 ```{r}
 # select Name, Type, Fate_Event, Notes, Lifespan, and Active_Service for Survival analysis
 uboats_SA = uboats %>%
-  dplyr::select(Name, Type, Fate_Event, Notes, Lifespan, Active_Service)
+  dplyr::select(Name, Type, Fate_Event, Notes, Lifespan, Active_Service, 'Notable Commanders')
 ```
 ```{r}
 # show the unique fates, graph by count
@@ -84,18 +84,25 @@ type_counts = uboats_SA %>%
 type_counts %>% ggplot() +
   geom_col(aes(x = reorder(Type, n), y = n)) +
   coord_flip() +
-  labs(title = "Unique Types of U-Boats", x = "Count", y = "Type")
+  labs(title = "Unique Types of U-Boats", x = "Count", y = "Type") +
+  theme_minimal()
 ```
 ```{r}
-type_viic = uboats_SA %>%
-  filter(Type == "VIIC")
-viic_fit = survfit(Surv(Active_Service, Status) ~ 1, data = type_viic)
-ggsurvplot(viic_fit, data = type_viic, palette = "YlOrRd", risk.table = F, conf.int = T) +
-  labs(title = "Survival of VIIC U-Boats", x = "Active Service (Years)")
-```
-```{r}
-# create a unique list of commanders, splittind the commander col by comma
+# type_viic = uboats_SA %>%
+#   filter(Type == "VIIC")
+# viic_fit = survfit(Surv(Active_Service, Status) ~ 1, data = type_viic)
+# ggsurvplot(viic_fit, data = type_viic, palette = "YlOrRd", risk.table = F, conf.int = T) +
+#   labs(title = "Survival of VIIC U-Boats", x = "Active Service (Years)")
 
-unique_commanders = uboats %>% dplyr::select("Notable Commanders") %>% distinct() %>% separate_rows("Notable Commanders", sep = ",")
-unique_commanders
+type_km = function(utype, table) {
+  type_table = table %>% filter(Type == utype)
+  type_fit =  survfit(Surv(Active_Service, Status) ~ 1, data = type_table)
+  ggsurvplot(type_fit, data = type_table, palette = "YlOrRd", risk.table = F, conf.int = T) +
+          labs(title = "Survival of VIIC U-Boats", x = "Active Service (Years)")
+}
+```
+## notable commanders analysis
+```{r}
+#uniq comanders, split by ,
+
 ```
