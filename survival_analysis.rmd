@@ -1,0 +1,38 @@
+```{r}
+library(tidyverse)
+library(skimr)
+library(survival)
+library(survminer)
+library(fitdistrplus)
+
+root = 'C://Users//corma//Documents//GitHub//WW2_Analysis//u-boat_analysis.rmd'
+```
+```{r}
+# read in the survival analysis data
+uboats = read_csv("uboats_cleaned.csv")
+
+```
+```{r}
+# a function that takes a dataframe and outputs a km plot
+km_plot = function(data, time, event, group, title){
+  survfit(Surv(time, event) ~ group, data = data) %>%
+    ggsurvplot(fit, data = data, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) +
+    ggtitle(title)
+}
+```
+```{r}
+# if Sunk, Scuttled, Surrendered, Captured, or Missing, then 1, else 0
+uboats = uboats %>%
+  mutate(event = ifelse(Fate_Event %in% c("Sunk", "Scuttled", "Surrendered", "Captured", "Missing"), 1, 0))
+```
+```{r}
+skim(uboats)
+```
+```{r}
+# for each unique Type, create a km plot
+unq_types = unique(uboats$Type)
+for (type in unq_types){
+  data = uboats %>% filter(Type == type)
+  km_plot(data, data$Lifespan, event, data$Type, paste("KM curve for", type))
+}
+```
