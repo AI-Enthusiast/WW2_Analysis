@@ -16,50 +16,27 @@ uboats = read_csv("uboats_cleaned.csv")
 # if Sunk, Scuttled, Surrendered, Captured, or Missing, then 1, else 0
 uboats = uboats %>%
   mutate(event = ifelse(Fate_Event %in% c("Sunk", "Scuttled", "Surrendered", "Captured", "Missing"), 1, 0))
+
+# if the boat had a notable commander, then 1, else 0
+uboats = uboats %>%
+  mutate(notable = ifelse(`Notable Commanders` != 'NA', 1, 0))
+
+# if notable is na, then 0
+uboats = uboats %>%
+  mutate(notable = ifelse(is.na(notable), 0, notable))
 ```
 ```{r}
 overall_fit = survfit(Surv(Lifespan, event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
 ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
 ```
 ```{r}
-# print the top 5 most common types
-uboats %>%
-  count(Type) %>%
-  arrange(desc(n)) %>%
-  head(5)
+# now active service
+overall_fit = survfit(Surv(Active_Service,event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
+ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
 ```
-"VIIC"	568.0
-"XXI"	118.0
-"VIIC/41"	91.0
-"IXC/40"	87.0
-"XXIII"	61.0
-```{r}
-viic_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "VIIC"))
-xxi_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "XXI"))
-viic41_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "VIIC/41"))
-ixc40_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "IXC/40"))
-xxiii_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "XXIII"))
 
-```
 ```{r}
-viic_plot = ggsurvplot(viic_fit, data = uboats %>% filter(Type == "VIIC"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for VIIC U-Boats")
-xxi_plot = ggsurvplot(xxi_fit, data = uboats %>% filter(Type == "XXI"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for XXI U-Boats")
-viic41_plot = ggsurvplot(viic41_fit, data = uboats %>% filter(Type == "VIIC/41"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for VIIC/41 U-Boats")
-ixc40_plot = ggsurvplot(ixc40_fit, data = uboats %>% filter(Type == "IXC/40"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for IXC/40 U-Boats")
-xxiii_plot = ggsurvplot(xxiii_fit, data = uboats %>% filter(Type == "XXIII"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for XXIII U-Boats")
-```
-```{r}
-viic_plot
-```
-```{r}
-xxi_plot
-```
-```{r}
-viic41_plot
-```
-```{r}
-ixc40_plot
-```
-```{r}
-xxiii_plot
+# perform a test to see if uboats with notable commanders last longer
+overall_fit = survfit(Surv(Active_Service, event) ~ notable, data = uboats)
+ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
 ```
