@@ -5,34 +5,61 @@ library(survival)
 library(survminer)
 library(fitdistrplus)
 
-root = 'C://Users//corma//Documents//GitHub//WW2_Analysis//u-boat_analysis.rmd'
+root = 'C://Users//corma//Documents//GitHub//WW2_Analysis//'
+setwd(root)
 ```
 ```{r}
 # read in the survival analysis data
 uboats = read_csv("uboats_cleaned.csv")
 
-```
-```{r}
-# a function that takes a dataframe and outputs a km plot
-km_plot = function(data, time, event, group, title){
-  survfit(Surv(time, event) ~ group, data = data) %>%
-    ggsurvplot(fit, data = data, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) +
-    ggtitle(title)
-}
-```
-```{r}
+
 # if Sunk, Scuttled, Surrendered, Captured, or Missing, then 1, else 0
 uboats = uboats %>%
   mutate(event = ifelse(Fate_Event %in% c("Sunk", "Scuttled", "Surrendered", "Captured", "Missing"), 1, 0))
 ```
 ```{r}
-skim(uboats)
+overall_fit = survfit(Surv(Lifespan, event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
+ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
 ```
 ```{r}
-# for each unique Type, create a km plot
-unq_types = unique(uboats$Type)
-for (type in unq_types){
-  data = uboats %>% filter(Type == type)
-  km_plot(data, data$Lifespan, event, data$Type, paste("KM curve for", type))
-}
+# print the top 5 most common types
+uboats %>%
+  count(Type) %>%
+  arrange(desc(n)) %>%
+  head(5)
+```
+"VIIC"	568.0
+"XXI"	118.0
+"VIIC/41"	91.0
+"IXC/40"	87.0
+"XXIII"	61.0
+```{r}
+viic_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "VIIC"))
+xxi_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "XXI"))
+viic41_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "VIIC/41"))
+ixc40_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "IXC/40"))
+xxiii_fit = survfit(Surv(Lifespan, event) ~ 1, data = uboats %>% filter(Type == "XXIII"))
+
+```
+```{r}
+viic_plot = ggsurvplot(viic_fit, data = uboats %>% filter(Type == "VIIC"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for VIIC U-Boats")
+xxi_plot = ggsurvplot(xxi_fit, data = uboats %>% filter(Type == "XXI"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for XXI U-Boats")
+viic41_plot = ggsurvplot(viic41_fit, data = uboats %>% filter(Type == "VIIC/41"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for VIIC/41 U-Boats")
+ixc40_plot = ggsurvplot(ixc40_fit, data = uboats %>% filter(Type == "IXC/40"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for IXC/40 U-Boats")
+xxiii_plot = ggsurvplot(xxiii_fit, data = uboats %>% filter(Type == "XXIII"), pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for XXIII U-Boats")
+```
+```{r}
+viic_plot
+```
+```{r}
+xxi_plot
+```
+```{r}
+viic41_plot
+```
+```{r}
+ixc40_plot
+```
+```{r}
+xxiii_plot
 ```
