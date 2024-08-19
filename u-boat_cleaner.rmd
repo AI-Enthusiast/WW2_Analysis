@@ -26,6 +26,10 @@ uboats = uboats %>%
          Lifespan = as.numeric(difftime(Fate_Date, Commissioned, units = "days")))
 head(uboats$Lifespan)
 
+# remove '\n' from everything
+uboats = uboats %>%
+  mutate_at(vars(-Lifespan), ~gsub("\n", "", .))
+
 # save the data
 write_csv(uboats, "uboats_cleaned.csv")
 
@@ -107,9 +111,12 @@ cleaned_uboats = cleaned_uboats %>%
                Fate_Date = as.Date(Fate_Date, format = "%d %B %Y"))
 ```
 ```{r}
-cleaned_uboats = cleaned_uboats %>%
-  mutate(Active_Service = calc_war_service(as.Date(Commissioned, format = "%d %B %Y"), as.Date(Fate_Date, format = "%d %B %Y")))
-write_csv(cleaned_uboats, "uboats_cleaned2.csv")
+# cleaned_uboats = cleaned_uboats %>%
+#   mutate(Active_Service = calc_war_service(as.Date(Commissioned, format = "%d %B %Y"), as.Date(Fate_Date, format = "%d %B %Y")))
+for (i in 1:nrow(cleaned_uboats)) {
+  cleaned_uboats$Active_Service[i] = calc_war_service(cleaned_uboats$Commissioned[i], cleaned_uboats$Fate_Date[i])
+}
+write_csv(cleaned_uboats, "uboats_cleaned.csv")
 ```
 ```{r}
 # filter for uboats where Active_Service > lifespan

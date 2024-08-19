@@ -60,13 +60,23 @@ survival of the U-Boats over time.
 
 ### Results
 
+-- by ship type, by commander, war, 
 
+#### Ship Type
+
+#### Notable Commanders
+
+[//]: # (Heinz-Otto Schultze)
+
+[//]: # (Wolfgang Lüth)
+
+[//]: # (Günther Prien)
 
 ## Conclusion
 
 ## References
 
-- [1] https://en.wikipedia.org/wiki/Turtle_(submersible)
-- [2] https://en.wikipedia.org/wiki/U-boat
-- [3] https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(1-599)
-- [4] https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(600-4712)
+[1] https://en.wikipedia.org/wiki/Turtle_(submersible)
+[2] https://en.wikipedia.org/wiki/U-boat
+[3] https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(1-599)
+[4] https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(600-4712)
