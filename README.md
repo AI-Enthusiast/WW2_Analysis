@@ -21,11 +21,32 @@ the most useful in terms of survival analysis. With the fate date and commission
 number of days each U-Boat saw service, called active service. This was the primary metric I used to analyze the
 longevity of the U-Boats.
 
-### Data Summary
+### EDA
+
 <img src="slides/avg_lifespan_by_year.png?raw=true"/>
+
+Here we get a bar chart of the average lifespan of U-Boats by year. This shows that the average lifespan of U-Boats has
+been decreasing over time. This could be due to a number of factors, such as improved technology, better tactics, or
+simply the fact that the U-Boats were being used more aggressively (and recklessly) as the war went on.
+
 <img src="slides/hist_of_lifespan.png?raw=true"/>
+
+This histogram shows the distribution of the lifespan of U-Boats. The majority of U-Boats had a lifespan of less than
+1000 days. While clearly left leaning losses do steady out to just under a dozen every 100 days (a bins width), after
+the 1000 day mark. Shockingly there are even a few U-Boats that make it past 3000 days (over 8 years).
+
 <img src="slides/unique_fates_by_count.png?raw=true"/>
+
+This bar chart shows the number of U-Boats that had each fate. This informs our survival analysis by showing us the
+which U-Boats survived and which did not. The majority of U-Boats were sunk, but there were also a significant number
+that were scuttled, captured, or surrendered.
+
 <img src="slides/unique_types_by_count.png?raw=true"/>
+
+This bar chart shows the number of U-Boats of each type. This informs our survival analysis by showing us the which
+U-Boats were most common. The majority of U-Boats were Type VIIC, but there were also a significant number of Type IX
+and Type IXC U-Boats. For the purposes of this analysis we will only be focusing on the top 5 as I feel there is
+sufficient data to inform our analysis.
 
 ### Process
 
@@ -61,7 +82,7 @@ survival of the U-Boats over time.
 
 ### Results
 
--- by ship type, by commander, war, 
+-- by ship type, by commander, war,
 
 #### Ship Type
 
