@@ -22,9 +22,10 @@ number of days each U-Boat saw service, called active service. This was the prim
 longevity of the U-Boats.
 
 ### Data Summary
-<img src="slides/unq_types.png?raw=true"/>
-<img src="slides/unq_fates.png?raw=true"/>
-
+<img src="slides/avg_lifespan_by_year.png?raw=true"/>
+<img src="slides/hist_of_lifespan.png?raw=true"/>
+<img src="slides/unique_fates_by_count.png?raw=true"/>
+<img src="slides/unique_types_by_count.png?raw=true"/>
 
 ### Process
 
