@@ -19,20 +19,25 @@ uboats = uboats %>%
   mutate(notable = ifelse(is.na(notable), 0, notable))
 ```
 ```{r}
-overall_fit = survfit(Surv(Lifespan, event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
-ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
-```
-```{r}
 # now active service
 overall_fit = survfit(Surv(Active_Service, event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
-ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
+ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats by Type")
 ```
 
 ```{r}
 # perform a test to see if uboats with notable commanders last longer
 overall_fit = survfit(Surv(Active_Service, event) ~ notable, data = uboats)
-ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
+ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats with Notable Commanders")
 ```
+
+```{r}
+# a km curve for commissioned years
+uboats = uboats %>%
+  mutate(commish_year = as.numeric(str_sub(Commissioned, 1, 4)))
+year_fit = survfit(Surv(Active_Service, event) ~ commish_year, data = uboats)
+ggsurvplot(year_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats by Commissioned Year")
+```
+
 
 ----------------------
 # Tidyverse Time
@@ -59,6 +64,6 @@ p + geom_coxph(ttf, status, deviceType, mfgLocation, failure = T, conf.int = 0.5
 # p + geom_coxph(ttf, status, deviceType, facet_x = mfgLocation, conf.int = F) + geom_survreg()
 ```
 ```{r}
-sa_p = uboats_SA %>% ggplot() + theme_classic()
+sa_p = uboats %>% ggplot() + theme_classic()
 sa_p + geom_coxph('Active_Service', 'Status', 'Type')
 ```
