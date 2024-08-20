@@ -34,4 +34,31 @@ overall_fit = survfit(Surv(Active_Service, event) ~ notable, data = uboats)
 ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
 ```
 
+----------------------
+# Tidyverse Time
+```{r}
+library(tidyverse)
+library(devtools)
 
+setwd("C:/Users/corma/Documents/GitHub/WW2_Analysis/survivalverse")
+load_all()
+```
+```{r}
+?geom_coxph
+```
+```{r}
+p = mfg %>% ggplot()
+
+#Basic coxph graph
+p + geom_coxph(ttf, status, deviceType)
+
+#Failure plot with strata and different confidence intervals
+p + geom_coxph(ttf, status, deviceType, mfgLocation, failure = T, conf.int = 0.5)
+
+#Using faceting and inheritance
+# p + geom_coxph(ttf, status, deviceType, facet_x = mfgLocation, conf.int = F) + geom_survreg()
+```
+```{r}
+sa_p = uboats_SA %>% ggplot() + theme_classic()
+sa_p + geom_coxph('Active_Service', 'Status', 'Type')
+```
