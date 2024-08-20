@@ -114,6 +114,38 @@ type_km = function(utype, table) {
     labs(title = "Survival of VIIC U-Boats", x = "Active Service (Years)")
 }
 ```
+```{r}
+# calculate avg lifespan for uboast for each Year
+uboats %>%
+        group_by(Year) %>%
+        summarise(avg_lifespan = mean(Lifespan, na.rm = TRUE)) %>%
+        ggplot() +
+        geom_col(aes(x = Year, y = avg_lifespan), fill = '#3D9970', color = 'black') +
+        theme_classic() +
+        labs(title = "Average Lifespan of U-Boats by Year", x = "Year", y = "Average Lifespan") +
+        theme(text = element_text(family = "serif"),
+              title = element_text(face = "bold", size = 18),
+              axis.title.x = element_text(face = "bold", size = 14),
+              axis.title.y = element_text(face = "bold", size = 14),
+              axis.text.x = element_text(face = "bold", size = 10),
+              axis.text.y = element_text(face = "bold", size = 10),
+              legend.position = "none")
+```
+
+```{r}
+# look at the distribution of lifespan
+ggplot(uboats, aes(x = Lifespan)) +
+        geom_histogram(binwidth = 100, fill = '#3D9970', color = 'black') +
+        theme_classic() +
+        labs(title = 'Lifespan of U-Boats', x = 'Lifespan (Days)', y = 'Count') +
+        theme(text = element_text(family = "serif"),
+              title = element_text(face = "bold", size = 18),
+              axis.title.x = element_text(face = "bold", size = 14),
+              axis.title.y = element_text(face = "bold", size = 14),
+              axis.text.x = element_text(face = "bold", size = 12),
+              axis.text.y = element_text(face = "bold", size = 12))
+```
+
 ## notable commanders analysis
 ```{r}
 # read in the notable commanders data
