@@ -54,10 +54,16 @@ fate_counts = uboats_SA %>%
   arrange(desc(n))
 
 fate_counts %>% ggplot() +
-  geom_col(aes(x = reorder(Fate_Event, n), y = n)) +
+  geom_col(aes(x = reorder(Fate_Event, n), y = n), fill = '#3D9970', color = 'black') +
   coord_flip() +
-  labs(title = "Unique Fates of U-Boats", x = "Count", y = "Fate") +
-  theme_minimal()
+  labs(title = "Unique Fates of U-Boats", x = "Fate", y = "Count") +
+  theme_classic() +
+  theme(text = element_text(family = "serif"),
+        title = element_text(face = "bold", size = 18),
+        axis.title.x = element_text(face = "bold", size = 14),
+        axis.title.y = element_text(face = "bold", size = 14),
+        axis.text.x = element_text(face = "bold", size = 12),
+        axis.text.y = element_text(face = "bold", size = 12))
 ```
 ```{r}
 # if Sunk, Scuttled, or Surrendered, then 1, else 0
@@ -82,10 +88,17 @@ type_counts = uboats_SA %>%
   arrange(desc(n))
 
 type_counts %>% ggplot() +
-  geom_col(aes(x = reorder(Type, n), y = n)) +
+  geom_col(aes(x = reorder(Type, n), y = n), fill = '#3D9970', color = 'black') +
   coord_flip() +
-  labs(title = "Unique Types of U-Boats", x = "Count", y = "Type") +
-  theme_minimal()
+  labs(title = "Unique Types of U-Boats", x = "Type", y = "Count") +
+  theme_classic() +
+  theme(text = element_text(family = "serif"),
+        title = element_text(face = "bold", size = 18),
+        axis.title.x = element_text(face = "bold", size = 14),
+        axis.title.y = element_text(face = "bold", size = 14),
+        axis.text.x = element_text(face = "bold", size = 12),
+        axis.text.y = element_text(face = "bold", size = 12)
+  )
 ```
 ```{r}
 # type_viic = uboats_SA %>%
@@ -96,9 +109,9 @@ type_counts %>% ggplot() +
 
 type_km = function(utype, table) {
   type_table = table %>% filter(Type == utype)
-  type_fit =  survfit(Surv(Active_Service, Status) ~ 1, data = type_table)
+  type_fit = survfit(Surv(Active_Service, Status) ~ 1, data = type_table)
   ggsurvplot(type_fit, data = type_table, palette = "YlOrRd", risk.table = F, conf.int = T) +
-          labs(title = "Survival of VIIC U-Boats", x = "Active Service (Years)")
+    labs(title = "Survival of VIIC U-Boats", x = "Active Service (Years)")
 }
 ```
 ## notable commanders analysis
