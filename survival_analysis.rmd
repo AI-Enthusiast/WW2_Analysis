@@ -12,16 +12,9 @@ setwd(root)
 # read in the survival analysis data
 uboats = read_csv("uboats_cleaned.csv")
 
-
 # if Sunk, Scuttled, Surrendered, Captured, or Missing, then 1, else 0
 uboats = uboats %>%
-  mutate(event = ifelse(Fate_Event %in% c("Sunk", "Scuttled", "Surrendered", "Captured", "Missing"), 1, 0))
-
-# if the boat had a notable commander, then 1, else 0
-uboats = uboats %>%
-  mutate(notable = ifelse(`Notable Commanders` != 'NA', 1, 0))
-
-# if notable is na, then 0
+  mutate(event = ifelse(Fate_Event %in% c("Sunk", "Scuttled", "Surrendered", "Captured", "Missing"), 1, 0), notable = ifelse(`Notable Commanders` != 'NA', 1, 0))
 uboats = uboats %>%
   mutate(notable = ifelse(is.na(notable), 0, notable))
 ```
@@ -31,7 +24,7 @@ ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", con
 ```
 ```{r}
 # now active service
-overall_fit = survfit(Surv(Active_Service,event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
+overall_fit = survfit(Surv(Active_Service, event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
 ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
 ```
 
@@ -39,4 +32,14 @@ ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", con
 # perform a test to see if uboats with notable commanders last longer
 overall_fit = survfit(Surv(Active_Service, event) ~ notable, data = uboats)
 ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats")
+```
+```{r}
+# calculate avg lifespan for uboast for each Year
+uboats %>%
+  group_by(Year) %>%
+  summarise(avg_lifespan = mean(Lifespan, na.rm = TRUE)) %>%
+    ggplot() +
+    geom_col(aes(x = Year, y = avg_lifespan)) +
+    labs(title = "Average Lifespan of U-Boats by Year", x = "Year", y = "Average Lifespan") +
+    theme_minimal()
 ```
