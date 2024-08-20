@@ -14,7 +14,7 @@ uboats = read_csv("uboats_cleaned.csv")
 
 # if Sunk, Scuttled, Surrendered, Captured, or Missing, then 1, else 0
 uboats = uboats %>%
-  mutate(event = ifelse(Fate_Event %in% c("Sunk", "Scuttled", "Surrendered", "Captured", "Missing"), 1, 0), notable = ifelse(`Notable Commanders` != 'NA', 1, 0))
+  mutate(event = ifelse(Fate_Event %in% c("Sunk"), 1, 0), notable = ifelse(`Notable Commanders` != 'NA', 1, 0))
 uboats = uboats %>%
   mutate(notable = ifelse(is.na(notable), 0, notable))
 ```
