@@ -22,12 +22,12 @@ uboats = uboats %>%
          war = ifelse(as.Date(Commissioned) < as.Date('1939-09-01'), 'Interwar', 'WW2')) %>%
   filter(Active_Service > 0) %>%
   drop_na(Active_Service, event)
-top_5 = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII"))
+top_5_types = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII"))
 ```
 ```{r}
 # now active service
-overall_fit = survfit(Surv(Active_Service, event) ~ Type, data = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
-ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats by Type")
+overall_fit = survfit(Surv(Active_Service, event) ~ Type, data = top_5_types %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII")))
+ggsurvplot(overall_fit, data = top_5_types, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats by Type")
 ```
 
 ```{r}
@@ -66,11 +66,11 @@ gen_model = function(data, model_formula, dist_name, model_name) {
   # Calculate mean squared error (MSE)
   mse = mean((data$Active_Service - pred)^2)
 
-  # Calc AQI
-  aqi = sum((data$Active_Service - pred)^2) / sum((data$Active_Service - mean(data$Active_Service))^2)
+  # Calc aic
+  aic = AIC(model)
 
 
-  return(list(model = model, mse = mse, rsq = rsq, aqi = aqi, dist_name = model_name))
+  return(list(model = model, mse = mse, rsq = rsq, aic = aic, dist_name = model_name))
 }
 ```
 # models:
@@ -85,45 +85,25 @@ gen_model = function(data, model_formula, dist_name, model_name) {
 ```{r}
 # fit the models
 models = list()
-models[[1]] = gen_model(top_5, "notable", "weibull", "Weibull:notable")
-models[[2]] = gen_model(top_5, "notable + Type", "weibull", "Weibull:notable+Type")
-models[[3]] = gen_model(top_5, 'notable + commish_year', "weibull", "Weibull:notable+commish_year")
-models[[4]] = gen_model(top_5, "notable + Type +  commish_year", "weibull", "Weibull:notable+Type+commish_year")
-models[[5]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "weibull", "Weibull:notable+Type+Type*commish_year")
-
-# lognormal models
-models[[6]] = gen_model(top_5, "notable", "lognormal", "Lognormal:notable")
-models[[7]] = gen_model(top_5, "notable + Type", "lognormal", "Lognormal:notable+Type")
-models[[8]] = gen_model(top_5, 'notable + commish_year', "lognormal", "Lognormal:notable+commish_year")
-models[[9]] = gen_model(top_5, "notable + Type +  commish_year", "lognormal", "Lognormal:notable+Type+commish_year")
-models[[10]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "lognormal", "Lognormal:notable+Type+Type*commish_year")
-
-# exponential models
-models[[11]] = gen_model(top_5, "notable", "exponential", "Exponential:notable")
-models[[12]] = gen_model(top_5, "notable + Type", "exponential", "Exponential:notable+Type")
-models[[13]] = gen_model(top_5, 'notable + commish_year', "exponential", "Exponential:notable+commish_year")
-models[[14]] = gen_model(top_5, "notable + Type +  commish_year", "exponential", "Exponential:notable+Type+commish_year")
-models[[15]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "exponential", "Exponential:notable+Type+Type*commish_year")
-
-# gompertz models
-models[[16]] = gen_model(top_5, "notable", "gaussian", "gaussian:notable")
-models[[17]] = gen_model(top_5, "notable + Type", "gaussian", "gaussian:notable+Type")
-models[[18]] = gen_model(top_5, 'notable + commish_year', "gaussian", "gaussian:notable+commish_year")
-models[[19]] = gen_model(top_5, "notable + Type +  commish_year", "gaussian", "gaussian:notable+Type+commish_year")
-models[[20]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "gaussian", "gaussian:notable+Type+Type*commish_year")
-
-
+model_todo_list = c("extreme", "logistic", "gaussian", "weibull", "exponential", "rayleigh", "loggaussian", "lognormal", "loglogistic", "t")
+for (model_name in model_todo_list) {
+  models[[length(models) + 1]] = gen_model(top_5_types, "notable", model_name, paste("notable:", model_name))
+  models[[length(models) + 1]] = gen_model(top_5_types, "notable + Type", model_name, paste("notable+Type:", model_name))
+  models[[length(models) + 1]] = gen_model(top_5_types, 'notable + commish_year', model_name, paste("notable+commish_year:", model_name))
+  models[[length(models) + 1]] = gen_model(top_5_types, "notable + Type +  commish_year", model_name, paste("notable+Type+commish_year:", model_name))
+  models[[length(models) + 1]] = gen_model(top_5_types, "notable + Type +  commish_year + Type:commish_year", model_name, paste("notable+Type+Type*commish_year:", model_name))
+}
 ```
 ```{r}
 best_score = 0
 best_model = NULL
 for (model in models) {
   # check not na for rsq
-  if (is.na(model$aqi)) {
+  if (is.na(model$aic)) {
     next
   }
-  if (model$aqi > best_score) {
-    best_score = model$aqi
+  if (model$aic > best_score) {
+    best_score = model$aic
     best_model = model
   }
 }
@@ -141,7 +121,7 @@ for (model in models) {
 }
 
 print(best_model$dist_name)
-print(best_model$aqi)
+print(best_model$aic)
 print(best_model$rsq)
 
 # check if best model and best_rsq_model are the same
@@ -149,17 +129,124 @@ if (best_model$dist_name == best_rsq_model$dist_name) {
   print("Best model and best rsq model are the same")
 } else {
   print(best_rsq_model$dist_name)
-  print(best_rsq_model$aqi)
+  print(best_rsq_model$rsq)
+  print(best_rsq_model$aic)
 }
 ```
 ```{r}
 # plot predicted vs actual
-pred = predict(best_model$model, newdata = top_5, type = "response")
-top_5 = top_5 %>% mutate(pred = pred)
-top_5 %>% ggplot() +
+pred = predict(best_model$model, newdata = top_5_types, type = "response")
+top_5_types = top_5_types %>% mutate(pred = pred)
+top_5_types %>% ggplot() +
   geom_point(aes(x = Active_Service, y = pred)) +
   geom_abline(intercept = 0, slope = 1, color = "red") +
   labs(title = "Predicted vs Actual Active Service", x = "Actual", y = "Predicted") +
   theme_minimal()
 ```
+```{r}
+# cause a error onpupose
+```
+```{r}
+# create a weighted best model
+w_best_model = NULL
 
+# Create a data frame from the list of models
+model_metrics = do.call(rbind, lapply(models, function(model) {
+  data.frame(
+    dist_name = model$dist_name,
+    mse = model$mse,
+    aic = model$aic,
+    rsq = model$rsq
+  )
+}))
+```
+```{r}
+
+# for r2, mse and aic we want to minimize
+top_r2 = model_metrics %>% arrange(desc(rsq))
+top_mse = model_metrics %>% arrange(mse)
+top_aic = model_metrics %>% arrange(aic)
+```
+```{r}
+
+
+# given the position of each model, we will assign a its index as its weight, the further down the higher the weight
+# our best model will be the one with the lowest weighted score
+
+# assign weights
+for (i in seq_len(nrow(top_r2))) {
+  top_r2[i, "weight"] = i
+  top_mse[i, "weight"] = i
+  top_aic[i, "weight"] = i
+}
+```
+```{r}
+
+all_models = list(top_r2, top_mse, top_aic)
+# Initialize all_best_models as an empty data frame
+all_best_models <- data.frame(dist_name = character(), mse = numeric(), aic = numeric(), rsq = numeric(), weight = numeric(), stringsAsFactors = FALSE)
+```
+```{r}
+
+# Iterate through the models and update weights
+for (model_lis in all_models) {
+  for (model in model_lis) {
+    print(is.null(all_best_models))
+    if (is.null(all_best_models)) {
+      all_best_models = model
+    } else {
+      # Check if the model doesn't appear in the df all_best_models
+      if (model$dist_name %in% all_best_models$dist_name) {
+        # If it does appear, add their weights and update all_best_models
+        all_best_models[all_best_models$dist_name == model$dist_name, "weight"] <-
+          all_best_models[all_best_models$dist_name == model$dist_name, "weight"] + model$weight
+      } else {
+        all_best_models = rbind(all_best_models, model)
+      }
+    }
+  }
+}
+```
+```{r}
+
+# sort the list by weight
+all_best_models = all_best_models %>% arrange(weight)
+# get the best model
+w_best_model = all_best_models[[1]]
+print(w_best_model$dist_name)
+print(w_best_model$aic)
+print(w_best_model$rsq)
+```
+```{r}
+head(all_best_models)
+```
+```{r}
+models = model_metrics
+# rearange models by aic
+models = models %>% arrange(aic)
+# add a col weight, which is their index
+models = models %>% mutate(weight = 1:nrow(models))
+# arrange by rsq
+models = models %>% arrange(desc(rsq))
+# add a col weight, which is their index
+models = models %>% mutate(weight = weight + 1:nrow(models))
+# arrange by mse
+models = models %>% arrange(mse)
+# add a col weight, which is their index
+models = models %>% mutate(weight = weight + 1:nrow(models))
+```
+```{r}
+# arrange by weight
+models = models %>% arrange(weight)
+best_model_name = models[[1]]$dist_name
+best_model_aic = models[[1]]$aic
+best_model_rsq = models[[1]]$rsq
+best_model_weight = models[[1]]$weight
+print(best_model_name)
+print(best_model_aic)
+print(best_model_rsq)
+print(best_model_weight)
+```
+```{r}
+head(models)
+```
