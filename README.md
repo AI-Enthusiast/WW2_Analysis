@@ -82,11 +82,17 @@ survival of the U-Boats over time.
 
 ### Results
 
--- by ship type, by commander, war,
+#### War Year
+<img src="slides/km_by_com_year.png?raw=true"/>
 
 #### Ship Type
 
+<img src="slides/km_by_type.png?raw=true"/>
+
 #### Notable Commanders
+
+<img src="slides/km_by_cmd.png?raw=true"/>
+
 
 [//]: # (Heinz-Otto Schultze)
 
