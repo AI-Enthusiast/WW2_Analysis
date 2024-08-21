@@ -83,22 +83,41 @@ survival of the U-Boats over time.
 ### Results
 
 #### War Year
+
 <img src="slides/km_by_com_year.png?raw=true"/>
+
+This colorful spaghetti plot shows the survival of U-Boats over time. The different colors represent the different
+years. While there is clearly a problem with too much being shown and some of the pre war years not having many
+commisioned datas so the margins of error are significantly wide and obscuring our view of the data. This is a good
+starting point, but we need to refine our data to get a clearer picture.
+
+<img src="slides/km_by_war.png?raw=true"/>
+
+By grouping the data into WWII and interwar years we get a much clearer picture of the survival of U-Boats over time.
+The U-Boats that were commissioned during WWII had a much shorter lifespan than those that were commissioned during the
+interwar years. This is likely due to the increased aggression and intensity of the war. The losses of interwar U-Boats
+experiences increased infant mortality probably but stead out after the 500 day mark. This may be because the interwar
+U-Boats were outdated and their crews were moved to newer U-Boats. Once resources became scare in the latter third of
+the war U-Boast where used more sparingly and thus losses were less frequent.
 
 #### Ship Type
 
 <img src="slides/km_by_type.png?raw=true"/>
 
+Here there is a clear trend that all the U-Bots have a similar survival rate. The best performing U-Boat type is the
+Type VIIC, which is the most common type of U-Boat. This probably results in its higher survival rates, both in terms of
+training and repairability. Unfortunately, these factors also lead it to be th only type in our analysis to be used till
+almost the end, with only 25% chance to make it to the last half of the WWII.
+
 #### Notable Commanders
 
 <img src="slides/km_by_cmd.png?raw=true"/>
 
-
-[//]: # (Heinz-Otto Schultze)
-
-[//]: # (Wolfgang Lüth)
-
-[//]: # (Günther Prien)
+This plot shows the survival of U-Boats by notable commanders. This clearly shows that boats with notable commanders
+typically survive between 400-800 (due to margins of error) days longer than those without. This is likely due to the
+experience and skill of the commanders, as well as the morale boost they provide to the crew. Boats without a notable
+commander have a 50% chance of surviving to ~500 days, while those with a notable commander have a 50% chance of
+surviving to 900 days. Shockingly boats with notable commanders have a 25% chance of surviving to 2000 days.
 
 ## Conclusion
 
@@ -111,3 +130,5 @@ survival of the U-Boats over time.
 [3] https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(1-599)
 
 [4] https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(600-4712)
+
+[5] https://en.wikipedia.org/wiki/Type_VII_submarine
