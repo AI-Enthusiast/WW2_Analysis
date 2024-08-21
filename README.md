@@ -77,7 +77,7 @@ notable commanders will have the longest active service days.
 
 ## Evaluation
 
-To evaluate the hypothesis, I will use a Cox Proportional Hazards model to analyze the impact of the type of U-Boat and
+To evaluate the hypothesis, I will use a ~~Cox Proportional Hazards~~ model to analyze the impact of the type of U-Boat and
 the notable commanders on the active service days of the U-Boats. I will also use a Kaplan-Meier curve to visualize the
 survival of the U-Boats over time.
 
