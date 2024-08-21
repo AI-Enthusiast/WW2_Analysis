@@ -125,6 +125,7 @@ surviving to 900 days. Shockingly boats with notable commanders have a 25% chanc
 ## Conclusion
 
 [placeholder for conclusion]
+
 In conclusion, the longevity of U-Boats in the Second World War was influenced by a number of factors. The survival
 rates of U-Boats were worse for boats that were commissioned during the war, likely due to the increased aggression and
 intensity of the war. The top 5 boats shared similar survival curves, probably due to being commissioned during the war.
