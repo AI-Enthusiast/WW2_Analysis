@@ -16,7 +16,13 @@ uboats = read_csv("uboats_cleaned.csv")
 uboats = uboats %>%
   mutate(event = ifelse(Fate_Event %in% c("Sunk"), 1, 0), notable = ifelse(`Notable Commanders` != 'NA', 1, 0))
 uboats = uboats %>%
-  mutate(notable = ifelse(is.na(notable), 0, notable))
+  mutate(notable = ifelse(is.na(notable), 0, notable),
+         commish_year = as.numeric(str_sub(Commissioned, 1, 4)),
+         # if commissioned before after the start of WW2 then 'WW2' else 'Interwar'
+         war = ifelse(as.Date(Commissioned) < as.Date('1939-09-01'), 'Interwar', 'WW2')) %>%
+  filter(Active_Service > 0) %>%
+  drop_na(Active_Service, event)
+top_5 = uboats %>% filter(Type %in% c("VIIC", "XXI", "VIIC/41", "IXC/40", "XXIII"))
 ```
 ```{r}
 # now active service
@@ -32,38 +38,86 @@ ggsurvplot(overall_fit, data = uboats, pval = TRUE, surv.median.line = "hv", con
 
 ```{r}
 # a km curve for commissioned years
-uboats = uboats %>%
-  mutate(commish_year = as.numeric(str_sub(Commissioned, 1, 4)))
-year_fit = survfit(Surv(Active_Service, event) ~ commish_year, data = uboats)
-ggsurvplot(year_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats by Commissioned Year")
+year_fit = survfit(Surv(Active_Service, event) ~ war, data = uboats)
+ggsurvplot(year_fit, data = uboats, pval = TRUE, surv.median.line = "hv", conf.int = TRUE) + ggtitle("KM curve for U-Boats by War")
 ```
 
 
 ----------------------
-# Tidyverse Time
+# Model Fitting
 ```{r}
-library(tidyverse)
-library(devtools)
+gen_model = function(data, model_formula, dist_name, model_name) {
+  # Convert model_formula to a formula object
+  print(model_name)
+  formula_obj = as.formula(paste("Surv(Active_Service, event) ~", model_formula))
+  # Fit the survival regression model
+  model = survreg(formula_obj, data = data, dist = dist_name)
 
-setwd("C:/Users/corma/Documents/GitHub/WW2_Analysis/survivalverse")
-load_all()
+  # Predict the values using the model
+  pred = predict(model, newdata = data, type = "response")
+
+  # Calculate SSRES
+  ssres = sum((data$Active_Service - pred)^2)
+  # Calculate SSTOT
+  sstot = sum((data$Active_Service - mean(data$Active_Service))^2)
+  # Compute R²
+  rsq = 1 - (ssres / sstot)
+
+  # Calculate mean squared error (MSE)
+  mse = mean((data$Active_Service - pred)^2)
+
+  # Calc AQI
+  aqi = sum((data$Active_Service - pred)^2) / sum((data$Active_Service - mean(data$Active_Service))^2)
+
+
+  return(list(model = model, mse = mse, rsq = rsq, aqi = aqi, dist_name = model_name))
+}
+```
+# models:
+## notable
+## notable + Type
+## notable + Type
+## notable + Type  + commish_year
+## notable + Type  + commish_year + war:Type
+## notable + Type  + commish_year + war:Type + war:commish_year
+## notable + Type  + commish_year + war:Type + war:commish_year + Type:commish_year
+
+```{r}
+# fit the models
+models = list()
+models[[1]] = gen_model(top_5, "notable", "weibull", "Weibull:notable")
+models[[2]] = gen_model(top_5, "notable + Type", "weibull", "Weibull:notable+Type")
+models[[3]] = gen_model(top_5, "notable + Type +  commish_year", "weibull", "Weibull:notable+Type+commish_year")
+models[[4]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "weibull", "Weibull:notable+Type+commish_year:Type:commish_year+Type:commish_year")
+
+# lognormal models
+models[[5]] = gen_model(top_5, "notable", "lognormal", "Lognormal:notable")
+models[[6]] = gen_model(top_5, "notable + Type", "lognormal", "Lognormal:notable+Type")
+
+models[[7]] = gen_model(top_5, "notable + Type +  commish_year", "lognormal", "Lognormal:notable+Type+commish_year")
+
+
+
 ```
 ```{r}
-?geom_coxph
+best_score = 0
+best_model = NULL
+for (model in models) {
+  # check not na for rsq
+  if (is.na(model$aqi)) {
+    next
+  }
+  if (model$aqi > best_score) {
+    best_score = model$aqi
+    best_model = model
+  }
+}
+
+print(best_model$dist_name)
+print(best_model$aqi)
+print(best_model$rsq)
 ```
 ```{r}
-p = mfg %>% ggplot()
-
-#Basic coxph graph
-p + geom_coxph(ttf, status, deviceType)
-
-#Failure plot with strata and different confidence intervals
-p + geom_coxph(ttf, status, deviceType, mfgLocation, failure = T, conf.int = 0.5)
-
-#Using faceting and inheritance
-# p + geom_coxph(ttf, status, deviceType, facet_x = mfgLocation, conf.int = F) + geom_survreg()
+cols = c("notable", "Type", "war", "commish_year", "war:Type", "war:commish_year", "Type:commish_year")
 ```
-```{r}
-sa_p = uboats %>% ggplot() + theme_classic()
-sa_p + geom_coxph('Active_Service', 'Status', 'Type')
-```
+
