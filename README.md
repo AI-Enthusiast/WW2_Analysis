@@ -1,6 +1,6 @@
 # Depths of Survival: Analyzing U-Boat Longevity in the World Wars
 
-##### Cormac Dacker, 2024
+##### Cormac Dacker, 2024 [work in progress]
 
 ## Introduction
 
@@ -108,7 +108,8 @@ the war U-Boast where used more sparingly and thus losses were less frequent.
 Here there is a clear trend that all the U-Bots have a similar survival rate. The best performing U-Boat type is the
 Type VIIC, which is the most common type of U-Boat. This probably results in its higher survival rates, both in terms of
 training and repairability. It is noted that while these boats were smaller, that allowed them to crash dive faster than
-larger boats, perhaps spareing the men aboard of depth charges.[5] Unfortunately, these factors also lead it to be th only
+larger boats, perhaps spareing the men aboard of depth charges.[5] Unfortunately, these factors also lead it to be th
+only
 type in our analysis to be used till almost the end, with only 25% chance to make it to the last half of the WWII.
 
 #### Notable Commanders
@@ -123,11 +124,12 @@ surviving to 900 days. Shockingly boats with notable commanders have a 25% chanc
 
 ## Conclusion
 
-[//]: # (While there it may not be surprising that ...)
--  survival rates are worse for boats commissioned during a war
-- Top 5 boats shared similar survival curves, probably due to being commissioned during war
-- VIIC boats had the best survival rates, probably due to being the most common and smaller
-- Boats with notable commanders had better survival rates, probably due to experience and morale boost
+[placeholder for conclusion]
+In conclusion, the longevity of U-Boats in the Second World War was influenced by a number of factors. The survival
+rates of U-Boats were worse for boats that were commissioned during the war, likely due to the increased aggression and
+intensity of the war. The top 5 boats shared similar survival curves, probably due to being commissioned during the war.
+The Type VIIC boats had the best survival rates, probably due to being the most common and smaller. Boats with notable
+commanders had better survival rates, probably due to the experience and morale boost they provided to the crew.
 
 
 ## References
