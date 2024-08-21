@@ -87,15 +87,30 @@ gen_model = function(data, model_formula, dist_name, model_name) {
 models = list()
 models[[1]] = gen_model(top_5, "notable", "weibull", "Weibull:notable")
 models[[2]] = gen_model(top_5, "notable + Type", "weibull", "Weibull:notable+Type")
-models[[3]] = gen_model(top_5, "notable + Type +  commish_year", "weibull", "Weibull:notable+Type+commish_year")
-models[[4]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "weibull", "Weibull:notable+Type+commish_year:Type:commish_year+Type:commish_year")
+models[[3]] = gen_model(top_5, 'notable + commish_year', "weibull", "Weibull:notable+commish_year")
+models[[4]] = gen_model(top_5, "notable + Type +  commish_year", "weibull", "Weibull:notable+Type+commish_year")
+models[[5]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "weibull", "Weibull:notable+Type+Type*commish_year")
 
 # lognormal models
-models[[5]] = gen_model(top_5, "notable", "lognormal", "Lognormal:notable")
-models[[6]] = gen_model(top_5, "notable + Type", "lognormal", "Lognormal:notable+Type")
+models[[6]] = gen_model(top_5, "notable", "lognormal", "Lognormal:notable")
+models[[7]] = gen_model(top_5, "notable + Type", "lognormal", "Lognormal:notable+Type")
+models[[8]] = gen_model(top_5, 'notable + commish_year', "lognormal", "Lognormal:notable+commish_year")
+models[[9]] = gen_model(top_5, "notable + Type +  commish_year", "lognormal", "Lognormal:notable+Type+commish_year")
+models[[10]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "lognormal", "Lognormal:notable+Type+Type*commish_year")
 
-models[[7]] = gen_model(top_5, "notable + Type +  commish_year", "lognormal", "Lognormal:notable+Type+commish_year")
+# exponential models
+models[[11]] = gen_model(top_5, "notable", "exponential", "Exponential:notable")
+models[[12]] = gen_model(top_5, "notable + Type", "exponential", "Exponential:notable+Type")
+models[[13]] = gen_model(top_5, 'notable + commish_year', "exponential", "Exponential:notable+commish_year")
+models[[14]] = gen_model(top_5, "notable + Type +  commish_year", "exponential", "Exponential:notable+Type+commish_year")
+models[[15]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "exponential", "Exponential:notable+Type+Type*commish_year")
 
+# gompertz models
+models[[16]] = gen_model(top_5, "notable", "gaussian", "gaussian:notable")
+models[[17]] = gen_model(top_5, "notable + Type", "gaussian", "gaussian:notable+Type")
+models[[18]] = gen_model(top_5, 'notable + commish_year', "gaussian", "gaussian:notable+commish_year")
+models[[19]] = gen_model(top_5, "notable + Type +  commish_year", "gaussian", "gaussian:notable+Type+commish_year")
+models[[20]] = gen_model(top_5, "notable + Type +  commish_year + Type:commish_year", "gaussian", "gaussian:notable+Type+Type*commish_year")
 
 
 ```
@@ -112,12 +127,39 @@ for (model in models) {
     best_model = model
   }
 }
+best_score = -10
+best_rsq_model = NULL
+for (model in models) {
+  # check not na for rsq
+  if (is.na(model$rsq)) {
+    next
+  }
+  if (model$rsq > best_score) {
+    best_score = model$rsq
+    best_rsq_model = model
+  }
+}
 
 print(best_model$dist_name)
 print(best_model$aqi)
 print(best_model$rsq)
+
+# check if best model and best_rsq_model are the same
+if (best_model$dist_name == best_rsq_model$dist_name) {
+  print("Best model and best rsq model are the same")
+} else {
+  print(best_rsq_model$dist_name)
+  print(best_rsq_model$aqi)
+}
 ```
 ```{r}
-cols = c("notable", "Type", "war", "commish_year", "war:Type", "war:commish_year", "Type:commish_year")
+# plot predicted vs actual
+pred = predict(best_model$model, newdata = top_5, type = "response")
+top_5 = top_5 %>% mutate(pred = pred)
+top_5 %>% ggplot() +
+  geom_point(aes(x = Active_Service, y = pred)) +
+  geom_abline(intercept = 0, slope = 1, color = "red") +
+  labs(title = "Predicted vs Actual Active Service", x = "Actual", y = "Predicted") +
+  theme_minimal()
 ```
 
