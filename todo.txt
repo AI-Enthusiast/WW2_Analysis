@@ -1,0 +1,7 @@
+# finalize models
+
+# scrape service history for
+## num of patrols
+## wolfpacks served in
+# scrape flotilas served in dates with event or cencor
+# scrape notable commanders with dates event or cencore
