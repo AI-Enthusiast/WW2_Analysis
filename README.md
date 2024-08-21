@@ -1,4 +1,4 @@
-# Depths of Survival: Analyzing U-Boat Longevity in the World Wars
+# **Depths of Surviva**l: Analyzing U-Boat Longevity in the World Wars
 
 ##### Cormac Dacker, 2024 [work in progress]
 
