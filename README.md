@@ -105,7 +105,7 @@ the war U-Boast where used more sparingly and thus losses were less frequent.
 <img src="slides/km_by_type.png?raw=true"/>
 
 Here there is a clear trend that all the U-Bots have a similar survival rate. The best performing U-Boat type is the
-Type VIIC, which is the most common type of U-Boat. This probably results in its higher survival rates, both in terms of
+Type VIIC, which is the most common type of U-Boat.[4] This probably results in its higher survival rates, both in terms of
 training and repairability. Unfortunately, these factors also lead it to be th only type in our analysis to be used till
 almost the end, with only 25% chance to make it to the last half of the WWII.
 
