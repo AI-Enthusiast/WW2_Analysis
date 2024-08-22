@@ -149,4 +149,6 @@ df = pd.DataFrame(data, columns=['Name', 'Year', 'Type', 'Notable Commanders', '
                                  'Merchant_Ships_damaged_No', 'Merchant_Ships_damaged_GRT',
                                  'Merchant_Ships_total_loss_No', 'Merchant_Ships_total_loss_GRT', 'Fate_Event',
                                  'Fate_Date', 'Notes', 'URL', 'Commissioned', 'Patrols', 'Wolfpacks', 'Flotilla'])
+# drop \n from everywhere
+df = df.replace('\n', '', regex=True)
 df.to_csv('uboats.csv', index=False)
