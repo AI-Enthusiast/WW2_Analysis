@@ -77,7 +77,7 @@ def get_floatilla_data(soup):
                                                                                            {'id': 'mw-content-text'})
     infobox = content.find('table', {'class': 'infobox'})
     part_of = infobox.find('td', string='Part of:').find_next('td').text
-    cleaned = part_of.replace('\n\n', ',').replace('\n', ',').replace('\t','').split(',')
+    cleaned = part_of.replace('\n\n', ',').replace('\n', ',').replace('\t', '').split(',')
     cleaned = [x.strip() for x in cleaned]
     cleaned = [x for x in cleaned if x]
     cleaned_dict = {}
@@ -133,8 +133,10 @@ def get_data(soup):
             [name, year, type_, cmd_of_note, warships_sunk_n_total_loss_no, warships_sunk_n_total_loss_tons_n_grt,
              warships_damaged_no, warships_damaged_tons_n_grt, merchant_ships_sunk_no, merchant_ships_sunk_grt,
              merchant_ships_damaged_no, merchant_ships_damaged_grt, merchant_ships_total_loss_no,
-             merchant_ships_total_loss_grt, fate_event, fate_date, notes, url, commissioned, patrols, wolfpacks, flotilla])
+             merchant_ships_total_loss_grt, fate_event, fate_date, notes, url, commissioned, patrols, wolfpacks,
+             flotilla])
     return data
+
 
 url_1 = 'https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(1-599)'
 url_2 = 'https://en.wikipedia.org/wiki/List_of_German_U-boats_in_World_War_II_(600-4712)'
