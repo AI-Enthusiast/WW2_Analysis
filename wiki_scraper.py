@@ -67,15 +67,7 @@ def get_wolfpack_data(soup):
         pack = wp[:wp.find('(')].strip()
         dates = wp[wp.find('(') + 1:wp.find(')')].split('–')
         dates = [x.strip() for x in dates]
-
-        if len(dates[0].split('–')[
-                   0]) < 3:  # only the day is given, presume the month and year are the same as the second date
-            first_date = dates[0] + ' ' + dates[1].split(' ')[1] + ' ' + dates[1].split(' ')[2], dates[1]
-            dates = [datetime.strptime(x, '%d %B %Y') for x in first_date]
-        try:
-            wolfpack_dict[pack] = [x.strftime('%Y-%m-%d') for x in dates]
-        except AttributeError:
-            print('error with', pack, dates)
+        wolfpack_dict[pack] = dates
     return wolfpack_dict
 
 
@@ -85,7 +77,8 @@ def get_floatilla_data(soup):
                                                                                            {'id': 'mw-content-text'})
     infobox = content.find('table', {'class': 'infobox'})
     part_of = infobox.find('td', string='Part of:').find_next('td').text
-    cleaned = part_of.replace('\n\n', ',').replace('\n', ',').split(',')
+    cleaned = part_of.replace('\n\n', ',').replace('\n', ',').replace('\t','').split(',')
+    cleaned = [x.strip() for x in cleaned]
     cleaned = [x for x in cleaned if x]
     cleaned_dict = {}
     i = 0
@@ -93,26 +86,9 @@ def get_floatilla_data(soup):
         if 'Flotilla' in row:
             try:
                 split_dates = cleaned[i + 1].split('–')
-                if len(split_dates) == 2:
-                    first_date_split = split_dates[0].split(' ')
-                    second_date_split = split_dates[1].split(' ')
-                    first_date_split = [x for x in first_date_split if x]
-                    second_date_split = [x for x in second_date_split if x]
-                    if len(first_date_split) == 3 and len(second_date_split) == 3:  # both dates have years
-                        dates = [
-                            datetime.strptime(split_dates[0].strip(), '%d %B %Y'),
-                            datetime.strptime(split_dates[1].strip(), '%d %B %Y')
-                        ]
-                    elif len(first_date_split) == 2 and len(
-                            second_date_split) == 3:  # the second date's year applies to the first date
-                        dates = [
-                            datetime.strptime(split_dates[0].strip() + ' ' + second_date_split[2], '%d %B %Y'),
-                            datetime.strptime(split_dates[1].strip(), '%d %B %Y')
-                        ]
-                    # convert data to y-m-d
-                    cleaned_dict[row] = [x.strftime('%Y-%m-%d') for x in dates]
-                else:
-                    print('weird dates', split_dates)
+
+                cleaned_dict[row] = split_dates
+
             except Exception as e:
                 print(f"Error processing row: {row}, error: {e}")
         i += 1
