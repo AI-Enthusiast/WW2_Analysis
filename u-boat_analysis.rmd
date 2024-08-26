@@ -145,10 +145,26 @@ ggplot(uboats, aes(x = Lifespan)) +
               axis.text.x = element_text(face = "bold", size = 12),
               axis.text.y = element_text(face = "bold", size = 12))
 ```
+```{r}
+# plot patrols as a hist
+ggplot(uboats, aes(x = Patrols)) +
+        geom_histogram(binwidth = 1, fill = '#3D9970', color = 'black') +
+        theme_classic() +
+        labs(title = 'Patrols of U-Boats', x = 'Patrols', y = 'Count') +
+        theme(text = element_text(family = "serif"),
+              title = element_text(face = "bold", size = 18),
+              axis.title.x = element_text(face = "bold", size = 14),
+              axis.title.y = element_text(face = "bold", size = 14),
+              axis.text.x = element_text(face = "bold", size = 12),
+              axis.text.y = element_text(face = "bold", size = 12))
+```
 
 ## notable commanders analysis
 ```{r}
 # read in the notable commanders data
 notable_commanders = read_csv("uboat_commanders.csv")
+
+```
+```{r}
 
 ```
