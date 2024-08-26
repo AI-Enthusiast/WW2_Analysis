@@ -30,26 +30,20 @@ def get_commmissioned_date(soup):
 
 # get the count of patrols the boat went on
 def get_patrol_count(soup):
-    content = soup.find('main', {'id': 'content'}).find('div', {'id': 'bodyContent'}).find('div',
-                                                                                           {'id': 'mw-content-text'})
-    patrol_named = ['First patrol', 'Second patrol', 'Third patrol', 'Fourth patrol', 'Fifth patrol', 'Sixth patrol',
-                    'Seventh patrol', 'Eighth patrol', 'Ninth patrol', 'Tenth patrol', 'Eleventh patrol',
-                    'Twelfth patrol', 'First patrol and loss', 'Second patrol and loss', 'Third patrol and loss',
-                    'Fourth patrol and loss', 'Fifth patrol and loss', 'Sixth patrol and loss',
-                    'Seventh patrol and loss', 'Eighth patrol and loss', 'Ninth patrol and loss',
-                    'Tenth patrol and loss', 'Eleventh patrol and loss',
-                    'Twelfth patrol and loss']
-    double_patrols = ['First and second patrols', 'Second and third patrols', 'Third and fourth patrols',
-                      'Fourth and fifth patrols', 'Fifth and sixth patrols', 'Sixth and seventh patrols',
-                      'Seventh and eighth patrols', 'Eighth and ninth patrols', 'Ninth and tenth patrols',
-                      'Tenth and eleventh patrols', 'Eleventh and twelfth patrols']
+    try:
+        content = soup.find('main', {'id': 'content'}).find('div', {'id': 'bodyContent'}).find('div',
+                                                                                               {'id': 'mw-content-text'})
+    except:
+        return 0
+    text = content.text
     patrols = 0
-    all_lv3 = content.find_all('div', {'class': 'mw-heading mw-heading3'})
-    for lv3 in all_lv3:
-        if lv3.text.replace('[edit]', '') in patrol_named:
-            patrols += 1
-        elif lv3.text.replace('[edit]', '') in double_patrols:
-            patrols += 2
+    for i, word in enumerate(text.split()):
+        if 'patrol' in word.lower():
+            try:
+                num = int(text.split()[i - 1])
+                patrols += num
+            except:
+                pass
     return patrols
 
 
