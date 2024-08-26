@@ -29,8 +29,6 @@ head(uboats$Lifespan)
 # remove '\n' from everything
 uboats = uboats %>%
   mutate_at(vars(-Lifespan), ~gsub("\n", "", .))
-
-uboats = read_csv("uboats_cleaned.csv")
 ```
 ```{r}
 # if Sunk, Scuttled, Surrendered, Captured, or Missing, then 1, else 0
@@ -44,6 +42,10 @@ uboats = uboats %>%
 # if notable is na, then 0
 uboats = uboats %>%
   mutate(notable = ifelse(is.na(notable), 0, notable))
+```
+```{r}
+# save as uboats_cleaned.csv
+write_csv(uboats, "uboats_cleaned.csv")
 ```
 ```{r}
 calc_war_service = function(commissioned_date, fate_date) {
@@ -100,27 +102,18 @@ calc_war_service = function(commissioned_date, fate_date) {
   return(war_service)
 }
 ```
-
 ```{r}
-# convert fate date and commission date to date (eg 1935-07-25)
-uboats = uboats %>%
-        mutate(Commissioned = as.Date(Commissioned, format = "%d %B %Y"),
-               Fate_Date = as.Date(Fate_Date, format = "%d %B %Y"))
+# for (i in 1:nrow(uboats)) {
+#   uboats$Active_Service[i] = calc_war_service(uboats$Commissioned[i], uboats$Fate_Date[i])
+# }
+# write_csv(uboats, "uboats_cleaned.csv")
 ```
 ```{r}
-# cleaned_uboats = cleaned_uboats %>%
-#   mutate(Active_Service = calc_war_service(as.Date(Commissioned, format = "%d %B %Y"), as.Date(Fate_Date, format = "%d %B %Y")))
-for (i in 1:nrow(uboats)) {
-  uboats$Active_Service[i] = calc_war_service(uboats$Commissioned[i], uboats$Fate_Date[i])
-}
-write_csv(uboats, "uboats_cleaned.csv")
-```
-```{r}
-# filter for uboats where Active_Service > lifespan
-bad_span_uboats = uboats %>% filter(Active_Service > Lifespan)
-if (length(bad_span_uboats) > 0) {
-  bad_span_uboats
-} else {
-  print("There are no uboats where Active_Service > Lifespan")
-}
+# # filter for uboats where Active_Service > lifespan
+# bad_span_uboats = uboats %>% filter(Active_Service > Lifespan)
+# if (nrow(bad_span_uboats) > 0) {
+#   bad_span_uboats
+# } else {
+#   print("There are no uboats where Active_Service > Lifespan")
+# }
 ```
