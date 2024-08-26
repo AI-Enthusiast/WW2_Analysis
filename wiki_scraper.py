@@ -33,18 +33,11 @@ def get_patrol_count(soup):
     try:
         content = soup.find('main', {'id': 'content'}).find('div', {'id': 'bodyContent'}).find('div',
                                                                                                {'id': 'mw-content-text'})
+        infobox = content.find('table', {'class': 'infobox'})
+        patrols = infobox.find('td', text='Operations:').find_next('td').text
+        return patrols.count('patrol') - 1 if patrols.count('patrol') > 1 else patrols.count('patrol')
     except:
         return 0
-    text = content.text
-    patrols = 0
-    for i, word in enumerate(text.split()):
-        if 'patrol' in word.lower():
-            try:
-                num = int(text.split()[i - 1])
-                patrols += num
-            except:
-                pass
-    return patrols
 
 
 # get the wolfpacks the boat was in and the dates
