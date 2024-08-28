@@ -35,7 +35,7 @@ def get_patrol_count(soup):
                                                                                                {
                                                                                                    'id': 'mw-content-text'})
         infobox = content.find('table', {'class': 'infobox'})
-        patrols = infobox.find('td', text='Operations:').find_next('td').text
+        patrols = infobox.find('td', string='Operations:').find_next('td').text
         pre_count = patrols.count('patrol') - 1 if patrols.count('patrol') > 1 else patrols.count('patrol')
     except:
         return None, 0
