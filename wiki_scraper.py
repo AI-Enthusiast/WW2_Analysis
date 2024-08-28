@@ -32,7 +32,8 @@ def get_commmissioned_date(soup):
 def get_patrol_count(soup):
     try:
         content = soup.find('main', {'id': 'content'}).find('div', {'id': 'bodyContent'}).find('div',
-                                                                                               {'id': 'mw-content-text'})
+                                                                                               {
+                                                                                                   'id': 'mw-content-text'})
         infobox = content.find('table', {'class': 'infobox'})
         patrols = infobox.find('td', text='Operations:').find_next('td').text
         return patrols.count('patrol') - 1 if patrols.count('patrol') > 1 else patrols.count('patrol')
@@ -50,12 +51,14 @@ def get_wolfpack_data(soup):
     wolfpack_list = wolfpacks.find_next('ul').text
     wolfpacks_list = wolfpack_list.split('\n')
     wolfpack_dict = {}
+    wolfpack_count = 0
     for wp in wolfpacks_list:
         pack = wp[:wp.find('(')].strip()
         dates = wp[wp.find('(') + 1:wp.find(')')].split('–')
         dates = [x.strip() for x in dates]
         wolfpack_dict[pack] = dates
-    return wolfpack_dict
+        wolfpack_count += 1
+    return wolfpack_dict, wolfpack_count
 
 
 # get the flotilla the boat was in and the dates
@@ -113,7 +116,7 @@ def get_data(soup):
         boat_soup = get_u_boat_data(url)
         commissioned = get_commmissioned_date(boat_soup)
         patrols = get_patrol_count(boat_soup)
-        wolfpacks = get_wolfpack_data(boat_soup)
+        wolfpacks, w_count = get_wolfpack_data(boat_soup)
         flotilla = get_floatilla_data(boat_soup)
 
         data.append(
@@ -121,7 +124,7 @@ def get_data(soup):
              warships_damaged_no, warships_damaged_tons_n_grt, merchant_ships_sunk_no, merchant_ships_sunk_grt,
              merchant_ships_damaged_no, merchant_ships_damaged_grt, merchant_ships_total_loss_no,
              merchant_ships_total_loss_grt, fate_event, fate_date, notes, url, commissioned, patrols, wolfpacks,
-             flotilla])
+             w_count, flotilla])
     return data
 
 
@@ -137,7 +140,7 @@ df = pd.DataFrame(data, columns=['Name', 'Year', 'Type', 'Notable Commanders', '
                                  'Warships_Damaged_Tons-n-GRT', 'Merchant_Ships_sunk_No', 'Merchant_Ships_sunk_GRT',
                                  'Merchant_Ships_damaged_No', 'Merchant_Ships_damaged_GRT',
                                  'Merchant_Ships_total_loss_No', 'Merchant_Ships_total_loss_GRT', 'Fate_Event',
-                                 'Fate_Date', 'Notes', 'URL', 'Commissioned', 'Patrols', 'Wolfpacks', 'Flotilla'])
+                                 'Fate_Date', 'Notes', 'URL', 'Commissioned', 'Patrols', 'Wolfpacks', 'Wolfpacks_Count','Flotilla'])
 # drop \n from everywhere
 df = df.replace('\n', '', regex=True)
 df.to_csv('uboats.csv', index=False)
