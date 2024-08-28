@@ -1,1 +1,2 @@
 # scrape notable commanders with dates event or cencore
+# scrape postition of boats sunk on patrols, use for a geo map
