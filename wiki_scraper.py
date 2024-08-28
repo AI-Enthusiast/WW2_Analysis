@@ -36,7 +36,50 @@ def get_patrol_count(soup):
                                                                                                    'id': 'mw-content-text'})
         infobox = content.find('table', {'class': 'infobox'})
         patrols = infobox.find('td', text='Operations:').find_next('td').text
-        return patrols.count('patrol') - 1 if patrols.count('patrol') > 1 else patrols.count('patrol')
+        pre_count = patrols.count('patrol') - 1 if patrols.count('patrol') > 1 else patrols.count('patrol')
+        # patrols =
+        # ('\n\n7 patrols:\n1st patrol:\n26 September – 15 December 1942\n2nd patrol:\n11 January – 27 April 1943\n3rd patrol:\n24 June – 3 July 1943\n4th patrol:\n18 August – 1 December 1943\n5th patrol:\na. 23 January – 7 May 1944\nb. 4 – 10 July 1944\n6th patrol:\na. 15 July – 24 October 1944\nb. 25 – 28 October 1944\nc. 5 – 10 March 1945\n7th patrol: 12 March – 22 April 1945\n', 7)
+        patrols = patrols.replace('\n', '|').replace('||','')
+
+        # if the first char is a digit, and the next is 'patrols:' then we are only interested in what comes after
+        if patrols[0].isdigit() and 'patrols' in patrols.split(':')[0]:
+            patrols = patrols.split(':')[1:]
+            patrols = ':'.join(patrols)
+            # '|1st patrol:|26 September – 15 December 1942|2nd patrol:|11 January – 27 April 1943|3rd patrol:|24 June – 3 July 1943|4th patrol:|18 August – 1 December 1943|5th patrol:|a. 23 January – 7 May 1944|b. 4 – 10 July 1944|6th patrol:|a. 15 July – 24 October 1944|b. 25 – 28 October 1944|c. 5 – 10 March 1945|7th patrol: 12 March – 22 April 1945|'
+            # split by '|'
+            patrols = patrols.split('|')
+            patrols_dict = {} # patrols : [date list]
+            last_patrol = None
+            for i, p in enumerate(patrols):
+                if 'patrol' in p:
+                    print("Patrol:", p, i)
+                    # check it doesn't also have a date
+                    # eg 7th patrol: 12 March – 22 April 1945
+                    if len(p.split(':')) == 2 and p.split(':')[1] != "":
+                        split_patrol = p.split(':')
+                        try:
+                            prior_patrols_under_same_header = patrols_dict[split_patrol[0]]
+                            patrols_dict[split_patrol[0]] =  prior_patrols_under_same_header.append(split_patrol[1])
+                        except:
+                            patrols_dict[split_patrol[0]] = [split_patrol[1]]
+                        last_patrol = split_patrol[0]
+                    else:
+                        last_patrol = p
+                else:
+                    if last_patrol is not None:
+                        print("Date:", p, i, last_patrol)
+                        try:
+                            prior_patrols_under_same_header = patrols_dict[last_patrol]
+                            print('Prior:', prior_patrols_under_same_header)
+                            prior_patrols_under_same_header.append(p)
+                            patrols_dict[last_patrol] = prior_patrols_under_same_header
+                        except:
+                            patrols_dict[last_patrol] = [p]
+                            print('First date:', p)
+            patrols = patrols_dict
+        else:
+            patrols = patrols
+        return patrols, pre_count
     except:
         return 0
 
