@@ -90,7 +90,7 @@ def get_wolfpack_data(soup):
                                                                                            {'id': 'mw-content-text'})
     wolfpacks = content.find('h3', id='Wolfpacks')
     if not wolfpacks:
-        return None
+        return None, 0
     wolfpack_list = wolfpacks.find_next('ul').text
     wolfpacks_list = wolfpack_list.split('\n')
     wolfpack_dict = {}
