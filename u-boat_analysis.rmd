@@ -13,9 +13,9 @@ skim(uboats)
 ```
 ```{r}
 # drop rows with NA Active_Service and Lifespan
-uboats = uboats %>%
-  drop_na(Active_Service, Lifespan)
-skim(uboats)
+# uboats = uboats %>%
+#   drop_na(Active_Service, Lifespan)
+# skim(uboats)
 ```
 ```{r}
 colnames(uboats)
@@ -147,7 +147,7 @@ ggplot(uboats, aes(x = Lifespan)) +
 ```
 ```{r}
 # plot patrols as a hist
-ggplot(uboats, aes(x = Patrols)) +
+ggplot(uboats, aes(x = Patrols_Count)) +
         geom_histogram(binwidth = 1, fill = '#3D9970', color = 'black') +
         theme_classic() +
         labs(title = 'Patrols of U-Boats', x = 'Patrols', y = 'Count') +
@@ -157,6 +157,29 @@ ggplot(uboats, aes(x = Patrols)) +
               axis.title.y = element_text(face = "bold", size = 14),
               axis.text.x = element_text(face = "bold", size = 12),
               axis.text.y = element_text(face = "bold", size = 12))
+```
+```{r}
+# group by last flotilla and graph the count of rows
+uboats %>%
+        # title case last flotilla first
+        mutate(Last_Flotilla = str_to_title(Last_Flotilla)) %>% filter(event == 1) %>%
+        group_by(Last_Flotilla) %>%
+        summarise(count = n()) %>%
+        arrange(desc(count)) %>%
+        # head(5) %>%
+        ggplot(aes(y = reorder(Last_Flotilla, count), x = count)) +
+        geom_bar(stat = "identity", fill = "#3D9970") +
+        theme_classic() +
+        labs(title = "Flotillas Losses by Count", x = "Count", y = "Last Flotilla") +
+        theme(text = element_text(family = "serif"),
+                      title = element_text(face = "bold", size = 18),
+                      axis.title.x = element_text(face = "bold", size = 14, angle = 90, hjust = 1),
+                      axis.title.y = element_text(face = "bold", size = 14),
+                      axis.text.x = element_text(face = "bold", size = 12),
+                      axis.text.y = element_text(face = "bold", size = 12))
+```
+```{r}
+
 ```
 
 ## notable commanders analysis
