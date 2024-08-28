@@ -114,6 +114,7 @@ def get_floatilla_data(soup):
     cleaned = [x.strip() for x in cleaned]
     cleaned = [x for x in cleaned if x]
     cleaned_dict = {}
+    flotilla_count = 0
     i = 0
     for row in cleaned:
         if 'Flotilla' in row:
@@ -121,11 +122,11 @@ def get_floatilla_data(soup):
                 split_dates = cleaned[i + 1].split('–')
 
                 cleaned_dict[row] = split_dates
-
+                flotilla_count += 1
             except Exception as e:
                 print(f"Error processing row: {row}, error: {e}")
         i += 1
-    return cleaned_dict
+    return cleaned_dict, flotilla_count
 
 
 def get_data(soup):
@@ -160,14 +161,14 @@ def get_data(soup):
         commissioned = get_commmissioned_date(boat_soup)
         patrols, p_count = get_patrol_count(boat_soup)
         wolfpacks, w_count = get_wolfpack_data(boat_soup)
-        flotilla = get_floatilla_data(boat_soup)
+        flotilla, f_count = get_floatilla_data(boat_soup)
 
         data.append(
             [name, year, type_, cmd_of_note, warships_sunk_n_total_loss_no, warships_sunk_n_total_loss_tons_n_grt,
              warships_damaged_no, warships_damaged_tons_n_grt, merchant_ships_sunk_no, merchant_ships_sunk_grt,
              merchant_ships_damaged_no, merchant_ships_damaged_grt, merchant_ships_total_loss_no,
              merchant_ships_total_loss_grt, fate_event, fate_date, notes, url, commissioned, patrols, p_count, wolfpacks,
-             w_count, flotilla])
+             w_count, flotilla, f_count])
     return data
 
 
@@ -183,7 +184,7 @@ df = pd.DataFrame(data, columns=['Name', 'Year', 'Type', 'Notable Commanders', '
                                  'Warships_Damaged_Tons-n-GRT', 'Merchant_Ships_sunk_No', 'Merchant_Ships_sunk_GRT',
                                  'Merchant_Ships_damaged_No', 'Merchant_Ships_damaged_GRT',
                                  'Merchant_Ships_total_loss_No', 'Merchant_Ships_total_loss_GRT', 'Fate_Event',
-                                 'Fate_Date', 'Notes', 'URL', 'Commissioned', 'Patrols', 'Patrols_Count', 'Wolfpacks', 'Wolfpacks_Count','Flotilla'])
+                                 'Fate_Date', 'Notes', 'URL', 'Commissioned', 'Patrols', 'Patrols_Count', 'Wolfpacks', 'Wolfpacks_Count','Flotilla', 'Flotilla_Count'])
 # drop \n from everywhere
 df = df.replace('\n', '', regex=True)
 df.to_csv('uboats.csv', index=False)
