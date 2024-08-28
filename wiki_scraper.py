@@ -37,6 +37,8 @@ def get_patrol_count(soup):
         infobox = content.find('table', {'class': 'infobox'})
         patrols = infobox.find('td', text='Operations:').find_next('td').text
         pre_count = patrols.count('patrol') - 1 if patrols.count('patrol') > 1 else patrols.count('patrol')
+    except:
+        return None, 0
         # patrols =
         # ('\n\n7 patrols:\n1st patrol:\n26 September – 15 December 1942\n2nd patrol:\n11 January – 27 April 1943\n3rd patrol:\n24 June – 3 July 1943\n4th patrol:\n18 August – 1 December 1943\n5th patrol:\na. 23 January – 7 May 1944\nb. 4 – 10 July 1944\n6th patrol:\na. 15 July – 24 October 1944\nb. 25 – 28 October 1944\nc. 5 – 10 March 1945\n7th patrol: 12 March – 22 April 1945\n', 7)
         patrols = patrols.replace('\n', '|').replace('||','')
@@ -79,9 +81,7 @@ def get_patrol_count(soup):
             patrols = patrols_dict
         else:
             patrols = patrols
-        return patrols, pre_count
-    except:
-        return 0
+    return patrols, pre_count
 
 
 # get the wolfpacks the boat was in and the dates
@@ -158,7 +158,7 @@ def get_data(soup):
 
         boat_soup = get_u_boat_data(url)
         commissioned = get_commmissioned_date(boat_soup)
-        patrols = get_patrol_count(boat_soup)
+        patrols, p_count = get_patrol_count(boat_soup)
         wolfpacks, w_count = get_wolfpack_data(boat_soup)
         flotilla = get_floatilla_data(boat_soup)
 
@@ -166,7 +166,7 @@ def get_data(soup):
             [name, year, type_, cmd_of_note, warships_sunk_n_total_loss_no, warships_sunk_n_total_loss_tons_n_grt,
              warships_damaged_no, warships_damaged_tons_n_grt, merchant_ships_sunk_no, merchant_ships_sunk_grt,
              merchant_ships_damaged_no, merchant_ships_damaged_grt, merchant_ships_total_loss_no,
-             merchant_ships_total_loss_grt, fate_event, fate_date, notes, url, commissioned, patrols, wolfpacks,
+             merchant_ships_total_loss_grt, fate_event, fate_date, notes, url, commissioned, patrols, p_count, wolfpacks,
              w_count, flotilla])
     return data
 
@@ -183,7 +183,7 @@ df = pd.DataFrame(data, columns=['Name', 'Year', 'Type', 'Notable Commanders', '
                                  'Warships_Damaged_Tons-n-GRT', 'Merchant_Ships_sunk_No', 'Merchant_Ships_sunk_GRT',
                                  'Merchant_Ships_damaged_No', 'Merchant_Ships_damaged_GRT',
                                  'Merchant_Ships_total_loss_No', 'Merchant_Ships_total_loss_GRT', 'Fate_Event',
-                                 'Fate_Date', 'Notes', 'URL', 'Commissioned', 'Patrols', 'Wolfpacks', 'Wolfpacks_Count','Flotilla'])
+                                 'Fate_Date', 'Notes', 'URL', 'Commissioned', 'Patrols', 'Patrols_Count', 'Wolfpacks', 'Wolfpacks_Count','Flotilla'])
 # drop \n from everywhere
 df = df.replace('\n', '', regex=True)
 df.to_csv('uboats.csv', index=False)
