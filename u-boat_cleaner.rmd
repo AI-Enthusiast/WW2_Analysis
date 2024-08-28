@@ -45,7 +45,8 @@ uboats = uboats %>%
 
 # drop '[1]' from Last_Flotilla
 uboats = uboats %>%
-  mutate(Last_Flotilla = gsub("\\[1\\]", "", Last_Flotilla))
+  mutate(Last_Flotilla = gsub("\\[1\\]", "", Last_Flotilla)) %>%
+  mutate(Last_Flotilla = str_to_title(Last_Flotilla))
 ```
 ```{r}
 # save as uboats_cleaned.csv

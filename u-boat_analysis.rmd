@@ -162,7 +162,7 @@ ggplot(uboats, aes(x = Patrols_Count)) +
 # group by last flotilla and graph the count of rows
 uboats %>%
         # title case last flotilla first
-        mutate(Last_Flotilla = str_to_title(Last_Flotilla)) %>% filter(event == 1) %>%
+        filter(event == 1) %>%
         group_by(Last_Flotilla) %>%
         summarise(count = n()) %>%
         arrange(desc(count)) %>%
