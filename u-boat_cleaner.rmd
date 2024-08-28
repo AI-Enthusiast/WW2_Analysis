@@ -42,6 +42,10 @@ uboats = uboats %>%
 # if notable is na, then 0
 uboats = uboats %>%
   mutate(notable = ifelse(is.na(notable), 0, notable))
+
+# drop '[1]' from Last_Flotilla
+uboats = uboats %>%
+  mutate(Last_Flotilla = gsub("\\[1\\]", "", Last_Flotilla))
 ```
 ```{r}
 # save as uboats_cleaned.csv
