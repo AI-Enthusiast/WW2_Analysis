@@ -145,8 +145,6 @@ surviving to 900 days. Shockingly boats with notable commanders have a 25% chanc
 
 ## Conclusion
 
-## Conclusion
-
 This comprehensive survival analysis of German U-Boats during World War II reveals several critical factors that influenced submarine longevity in combat operations.
 
 **Key Findings:**
