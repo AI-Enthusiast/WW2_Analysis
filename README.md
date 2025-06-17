@@ -24,7 +24,7 @@ longevity of the U-Boats.
 
 ### EDA
 
-<img src="slides/avg_lifespan_by_year.png?raw=true"/>
+<img src="slides/avg_lifespan_by_year.png" alt="Average U-Boat Lifespan by Year"/>
 
 Here we get a bar chart of the average lifespan of U-Boats by year. This shows that the average lifespan of U-Boats has
 been decreasing over time. This could be due to a number of factors, such as improved technology, better tactics, or
