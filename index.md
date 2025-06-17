@@ -11,10 +11,10 @@ title: Home
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## Quick Navigation
-- [📊 View Results](results.md)
-- [🔬 Methodology](methodology.md)
-- [📁 Data Sources](data.md)
-- [💻 GitHub Repository](https://github.com/yourusername/WW2_Analysis)
+- [📊 View Results](results.html)
+- [🔬 Methodology](methodology.html)
+- [📁 Data Sources](data.html)
+- [💻 GitHub Repository](https://github.com/AI-Enthusiast/WW2_Analysis)
 
 ## Project Overview
 
@@ -65,7 +65,7 @@ This analysis uses **survival analysis** techniques including:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/WW2_Analysis.git
+git clone https://github.com/AI-Enthusiast/WW2_Analysis.git
 
 # Install R dependencies
 R -e "install.packages(c('tidyverse', 'survival', 'survminer'))"

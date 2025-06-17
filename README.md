@@ -207,7 +207,7 @@ commanders had better survival rates, probably due to the experience and morale 
 ### Steps
 1. **Clone this repository**
    ```bash
-   git clone [your-repo-url]
+   git clone https://github.com/AI-Enthusiast/WW2_Analysis.git
    cd WW2_Analysis
    ```
 

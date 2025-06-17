@@ -30,17 +30,14 @@ navigation:
     link: "/data"
 
 # Social links
-github_username: your-github-username
-linkedin_username: your-linkedin-username
+github_username: AI-Enthusiast
+linkedin_username: cormac-d
 
 # Google Analytics (optional)
 # google_analytics: UA-XXXXXXXX-X
 
 # SEO settings
 lang: en
-twitter:
-  username: your-twitter-username
-  card: summary_large_image
 
 # Exclude from processing
 exclude:

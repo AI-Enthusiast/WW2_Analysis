@@ -63,7 +63,7 @@ This dataset is compiled from public Wikipedia sources and is available under th
 
 ```
 Dacker, C. (2024). Depths of Survival: U-Boat Longevity Analysis Dataset. 
-GitHub Repository: https://github.com/yourusername/WW2_Analysis
+GitHub Repository: https://github.com/AI-Enthusiast/WW2_Analysis
 ```
 
 [Back to Main Analysis](/)
