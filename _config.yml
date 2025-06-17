@@ -1,1 +1,60 @@
+title: "Depths of Survival: U-Boat Longevity Analysis"
+description: "Statistical analysis of German U-Boat survival during WWII using survival analysis techniques"
+author: "Cormac Dacker"
+email: your-email@example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site
+
+# Theme
 theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Navigation
+navigation:
+  - name: "Home"
+    link: "/"
+  - name: "Methodology"
+    link: "/methodology"
+  - name: "Results"
+    link: "/results"
+  - name: "Data"
+    link: "/data"
+
+# Social links
+github_username: your-github-username
+linkedin_username: your-linkedin-username
+
+# Google Analytics (optional)
+# google_analytics: UA-XXXXXXXX-X
+
+# SEO settings
+lang: en
+twitter:
+  username: your-twitter-username
+  card: summary_large_image
+
+# Exclude from processing
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - venv/
+  - .idea/
+  - "*.rmd"
+  - "*.ipynb"
